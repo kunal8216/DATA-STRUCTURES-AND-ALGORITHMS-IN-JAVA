@@ -1,3 +1,4 @@
+//Shortest seek time first Disk Scheduling. 
 import java.util.*;
 public class sstf {
     private static ArrayList<Integer> list = new ArrayList<Integer>();
