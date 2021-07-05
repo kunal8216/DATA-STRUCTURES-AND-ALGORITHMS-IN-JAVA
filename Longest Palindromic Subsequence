@@ -1,0 +1,22 @@
+static String longestPalin(String S){
+      boolean dp[][] = new boolean[S.length()][S.length()];
+	    for(int g=0; g<S.length();g++)
+	    	for(int i=0,j=g;j<dp.length;i++,j++) {
+	    		if(g==0) dp[i][j] = true; 
+	    		else if(g==1) 
+	    			if(S.charAt(i)==S.charAt(j))
+	    				dp[i][j] = true;
+	    	 		else dp[i][j] = false;
+	    		else if(g>1)
+	    			if(S.charAt(i)==S.charAt(j)&&dp[i+1][j-1])
+	    				dp[i][j] = true; else dp[i][j] = false;
+ 	    	}
+	   if(dp[0][S.length()-1]) return (S.substring(0,S.length()));
+       int j=dp.length-2;
+        while(j>=0) {
+        	for(int i = 0,j1=j; i<dp.length&&j1<dp.length;j1++,i++) 
+        	    if (dp[i][j1]) 
+        	    	return S.substring(i,j1+1); j--;
+        }
+        return ""; 
+    }
