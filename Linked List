@@ -1,0 +1,1038 @@
+package LinkedList;
+import java.util.*;
+
+class Node {
+    int data;
+    Node next, prev;
+
+    Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+
+    Node() {
+        this.next = null;
+    }
+
+    Node insert_Node(Node head, int data) {
+        Node temp = head;
+        if (head == null) {
+            return new Node(data);
+        } else if (head.next == null) {
+            head.next = new Node(data);
+            return head;
+        } else {
+            while (head.next != null) {
+                head = head.next;
+            }
+            head.next = new Node(data);
+        }
+        return temp;
+    }
+
+    Node reverse_Iteratively(Node head) {
+        Node prev = null, curr = head, next_node = null;
+        while (curr != null) {
+            next_node = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next_node;
+        }
+        return prev;
+    }
+
+    int size(Node head) {
+        int count = 0;
+        while (head != null) {
+            count++;
+            head = head.next;
+        }
+        return count;
+    }
+}
+
+class Linked_List_Utilities {
+
+    int size(Node head) {
+        int count = 0;
+        while (head != null) {
+            count++;
+            head = head.next;
+        }
+        return count;
+    }
+
+    void print(Node node) {
+        if (node == null) {
+            System.out.println("Empty Linked List");
+        } else {
+            System.out.print("Linked List : ");
+            while (node != null) {
+                System.out.print(node.data + " ");
+                node = node.next;
+            }
+        }
+    }
+
+    Node insertAtBeginning(Node head, int data) {
+        Node temp = new Node(data);
+        if (head == null)
+            return new Node(data);
+        else {
+            temp.next = head;
+        }
+        return temp;
+    }
+
+    Node insertAtEnding(Node head, int data) {
+        Node temp = new Node(data), curr = head;
+        if (head == null)
+            return temp;
+        else {
+            while (curr.next != null) {
+                curr = curr.next;
+            }
+            curr.next = temp;
+        }
+        return head;
+    }
+
+    Node insertAtMiddle(Node head, int data, int position) {
+        Node temp = new Node(data), prev = head, next_node = head, temp_head = head;
+        int count = 1;
+        if (position <= 0 || position > size(head) + 1) {
+            System.out.println("Invalid input. Please check your input.");
+            return head;
+        } else if (position == 1) {
+            return insertAtBeginning(head, data);
+        } else if (position == size(head) + 1) {
+            return insertAtEnding(head, data);
+        } else {
+            while (prev != null) {
+                if (count == position - 1)
+                    break;
+                prev = prev.next;
+                count++;
+            }
+            next_node = prev.next;
+            prev.next = temp;
+            temp.next = next_node;
+        }
+        return temp_head;
+    }
+
+    Node deleteStartingNode(Node head) {
+        if (head == null || head.next == null)
+            return null;
+        return head.next;
+    }
+
+    Node deleteEndingNode(Node head) {
+        Node temp = head;
+        if (head == null || head.next == null)
+            return null;
+        while (temp.next.next != null)
+            temp = temp.next;
+        temp.next = null;
+        return head;
+    }
+
+    Node deleteAtPosition(Node head, int position) {
+        int count = 1;
+        Node temp = head, prev = head, next_node = head, curr = head;
+        if (head == null) {
+            System.out.println("Empty Linked List.");
+            return head;
+        } else if (position <= 0 || position > size(head)) {
+            System.out.println("Invalid input. Please check the input.");
+        } else if (position == 1) {
+            return deleteStartingNode(head);
+        } else if (position == size(head)) {
+            return deleteEndingNode(head);
+        } else {
+            while (prev != null) {
+                if (count == position - 1)
+                    break;
+                prev = prev.next;
+                count++;
+            }
+            count = 1;
+            while (curr != null) {
+                if (count == position)
+                    break;
+                curr = curr.next;
+                count++;
+            }
+            next_node = curr.next;
+            prev.next = next_node;
+        }
+        return temp;
+    }
+
+    Node reverse_Iteratively(Node head) {
+        Node prev = null, curr = head, next_node = null;
+        while (curr != null) {
+            next_node = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next_node;
+        }
+        return prev;
+    }
+
+    Node reverse_Recursively(Node head, Node prev) {
+        if (head == null) {
+            return prev;
+        }
+        Node temp = head.next;
+        head.next = prev;
+        return reverse_Recursively(temp, head);
+    }
+
+    Node reverse_With_Kth_Size(Node head, int k) {
+        int count = 0;
+        Node prev = null, curr = head, next_node = null;
+        if (k < 0) {
+            System.out.println("Invalid Input.");
+            return head;
+        }
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (k > 0) {
+            while (curr != null && count < k) {
+                next_node = curr.next;
+                curr.next = prev;
+                prev = curr;
+                curr = next_node;
+                count++;
+            }
+            if (curr != null) {
+                head.next = reverse_With_Kth_Size(curr, k);
+            }
+            return prev;
+        }
+        return prev;
+    }
+
+    boolean detect_Cycle(Node head) {
+        Node fast_node = head, slow_node = head;
+        while (fast_node != null && fast_node.next != null) {
+            fast_node = fast_node.next.next;
+            slow_node = slow_node.next;
+            if (fast_node == slow_node) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Node remove_Cycle(Node head) {
+        Node fast_node = head, slow_node = head;
+        while (fast_node != null && fast_node.next != null) {
+            fast_node = fast_node.next.next;
+            slow_node = slow_node.next;
+            if (fast_node == slow_node) {
+                fast_node = head;
+                break;
+            }
+        }
+        while (fast_node != slow_node) {
+            fast_node = fast_node.next;
+            slow_node = slow_node.next;
+        }
+        while (slow_node.next != fast_node) {
+            slow_node = slow_node.next;
+        }
+        slow_node.next = null;
+        return head;
+    }
+
+    Node remove_Duplicates_Totally(Node head) {
+        Node prev = head, curr = null;
+        int count = 0;
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.next != null) {
+            curr = head.next;
+        }
+        ArrayList<Integer> list = new ArrayList<>();
+        while (curr != null) {
+            if (prev.data == curr.data) {
+                count++;
+                curr = curr.next;
+            } else if (count > 0) {
+                prev = curr;
+                if (curr.next == null)
+                    list.add(prev.data);
+                curr = curr.next;
+                count = 0;
+            } else {
+                list.add(prev.data);
+                prev = curr;
+                if (curr.next == null)
+                    list.add(prev.data);
+                curr = curr.next;
+            }
+        }
+        Node main_node = new Node(list.get(0));
+        for (int i = 1; i < list.size(); i++)
+            main_node.insert_Node(main_node, list.get(i));
+        return main_node;
+    }
+
+    public Node addOne(Node head) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (head != null) {
+            while (head != null) {
+                stringBuilder.append(String.valueOf(head.data));
+                head = head.next;
+            }
+        } else return head;
+        System.out.println(stringBuilder.toString());
+        String str = stringBuilder.toString();
+        int carry = 0;
+        Integer x = Integer.parseInt(String.valueOf(str.charAt(str.length() - 1)));
+        if (x < 9) {
+            ++x;
+            String s = String.valueOf(x);
+            stringBuilder.setCharAt(str.length() - 1, s.charAt(0));
+            str = stringBuilder.toString();
+        } else {
+            carry = 1;
+            stringBuilder.setCharAt(str.length() - 1, '0');
+            for (int i = str.length() - 2; i >= 0; i--) {
+                Integer t = Integer.parseInt(String.valueOf(str.charAt(i)));
+                if (t == 9 && carry == 1) {
+                    stringBuilder.setCharAt(i, '0');
+                } else if (t < 9 && carry == 1) {
+                    carry = 0;
+                    Integer temp = Integer.parseInt(String.valueOf(str.charAt(i)));
+                    temp++;
+                    String s = String.valueOf(temp);
+                    stringBuilder.setCharAt(i, s.charAt(0));
+                }
+            }
+            if (carry == 1) {
+                stringBuilder.append(1);
+                stringBuilder.reverse();
+            }
+            str = stringBuilder.toString();
+        }
+        for (int i = str.length() - 1; i >= 0; i--) {
+            char c = str.charAt(i);
+            Integer integer = Integer.parseInt(String.valueOf(c));
+
+        }
+        Node node = null;
+        Linked_List_Utilities utilities = new Linked_List_Utilities();
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
+            list.add(Integer.parseInt(String.valueOf(ch)));
+        }
+        System.out.println("list : " + list);
+        for (Integer i : list) {
+            node.insert_Node(node, i);
+        }
+        return node;
+    }
+
+    public Node addTwoLists(Node head1, Node head2) {
+        Node res = new Node(-1);
+        int oc = addListHelper(head1, size(head1), head2, size(head2), res);
+        if (oc != 0)
+            res.insert_Node(res, 1);
+        res = res.next;
+        Node prev = null, curr = res, next_node = null;
+        while (curr != null) {
+            next_node = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next_node;
+        }
+        return prev;
+    }
+    private int addListHelper(Node head1, int pv1, Node head2, int pv2, Node res) {
+        if (head1 == null && head2 == null)
+            return 0;
+        int data = 0;
+        if (pv1 > pv2) {
+            int oc = addListHelper(head1.next, pv1 - 1, head2, pv2, res);
+            data = head1.data + oc;
+        } else if (pv2 > pv1) {
+            int oc = addListHelper(head1, pv1, head2.next, pv2 - 1, res);
+            data = head2.data + oc;
+        } else {
+            int oc = addListHelper(head1.next, pv1 - 1, head2.next, pv2 - 1, res);
+            data = head1.data + head2.data + oc;
+        }
+        int res_data = data % 10;
+        int carry = data / 10;
+        res.insert_Node(res, res_data);
+        return carry;
+    }
+
+    Node intersection_of_two_sorted_list(Node head1, Node head2) {
+        ArrayList<Integer> list = new ArrayList<>();
+        if (head1 == null || head2 == null) {
+            return null;
+        }
+        while (head1 != null && head2 != null) {
+            if (head1.data == head2.data) {
+                list.add(head1.data);
+                head1 = head1.next;
+                head2 = head2.next;
+            } else if (head1.data < head2.data) {
+                head1 = head1.next;
+            } else if (head1.data > head2.data) {
+                head2 = head2.next;
+            }
+        }
+        Node temp = null, res = null;
+        for (int i = 0; i < list.size(); i++) {
+            if (res == null) {
+                res = new Node(list.get(i));
+                temp = res;
+            } else {
+                res.next = new Node(list.get(i));
+                res = res.next;
+            }
+        }
+        return temp;
+    }
+
+    int intersectPoint(Node head1, Node head2) {
+        int difference = 0, l1 = size(head1), l2 = size(head2);
+        if (l1 > l2) {
+            difference = l1 - l2;
+            while (difference-- != 0)
+                head1 = head1.next;
+        } else if (l2 > l1) {
+            difference = l2 - l1;
+            while (difference-- != 0)
+                head2 = head2.next;
+        }
+        while (head1 != null && head2 != null) {
+            if (head1 == head2)
+                return head1.data;
+            head1 = head1.next;
+            head2 = head2.next;
+        }
+        return -1;
+    }
+
+    Node moveLastToFirst(Node head) {
+        Node prev = head, current = head;
+        if (head == null || head.next == null) {
+            return head;
+        }
+        while (current.next != null) {
+            prev = current;
+            current = current.next;
+        }
+        prev.next = null;
+        current.next = head;
+        return current;
+    }
+
+    Node remove_duplicates(Node head) {
+        Node temp = head;
+        while (head.next != null) {
+            if (head.data == head.next.data) {
+                head.next = head.next.next;
+                continue;
+            }
+            head = head.next;
+        }
+        return temp;
+    }
+
+    Node remove_duplicates_unsorted(Node head) {
+        HashMap<Integer, Integer> list = new HashMap<>();
+        Node temp = null, res = null;
+        while (head != null) {
+            if (!list.containsKey(head.data)) {
+                list.put(head.data, 1);
+                if (res == null) {
+                    res = new Node(head.data);
+                    temp = res;
+                } else {
+                    res.next = new Node(head.data);
+                    res = res.next;
+                }
+            }
+            head = head.next;
+        }
+        return temp;
+    }
+
+    boolean isPalindrome(Node head) {
+        StringBuilder stringBuilder = new StringBuilder();
+        while (head != null) {
+            stringBuilder.append(head.data);
+            head = head.next;
+        }
+        if (stringBuilder.toString().equals(stringBuilder.reverse().toString()))
+            return true;
+        return false;
+    }
+
+    Node reverse_DLL(Node head) {
+        if (head == null || head.next == null)
+            return head;
+        while (head.next != null)
+            head = head.next;
+        Node curr = head, next_node;
+        curr.next = curr.prev;
+        curr.prev = null;
+        curr = curr.next;
+        while (curr.prev != null) {
+            next_node = curr.next;
+            curr.next = curr.prev;
+            curr.prev = next_node;
+            curr = curr.next;
+        }
+        curr.prev = curr.next;
+        curr.next = null;
+        return head;
+    }
+
+    String Non_Repeating(String str) {
+        if (str.length() <= 1)
+            return str;
+        LinkedHashMap<Character, Integer> map = new LinkedHashMap<>();
+        StringBuilder sb = new StringBuilder();
+        sb.append(str.charAt(0));
+        map.put(str.charAt(0), map.getOrDefault(str.charAt(0), 0) + 1);
+        for (int i = 1; i < str.length(); i++) {
+            char ch = str.charAt(i);
+            if (map.containsKey(ch)) {
+                map.put(ch, map.getOrDefault(ch, 0) + 1);
+            } else if (!map.containsKey(ch)) {
+                map.put(ch, map.getOrDefault(ch, 0) + 1);
+            }
+            if (!map.isEmpty()) {
+                sb.append(peek(map));
+            } else if (map.isEmpty()) {
+                sb.append('#');
+            }
+        }
+        return sb.toString();
+    }
+    char peek(HashMap<Character, Integer> map) {
+        for (Map.Entry entry : map.entrySet())
+            if (entry.getValue().equals(1))
+                return entry.getKey().toString().charAt(0);
+        return '#';
+    }
+
+    Node delete_Nodes_On_Right_With_Greater_Value(Node head){
+        Node res = null, temp = null;
+        if (head == null || head.next == null)
+            return head;
+        while (head != null){
+            if (helper(head)){
+                if (res == null) {
+                    res = new Node(head.data);
+                    temp = res;
+                }else {
+                    res.next = new Node(head.data);
+                    res = res.next;
+                }
+            }
+            head = head.next;
+        }
+        return temp;
+    }
+    private boolean helper(Node head) {
+        int temp = head.data;
+        while (head != null){
+            if (head.data > temp)
+                return  false;
+            head = head.next;
+        }
+        return true;
+    }
+
+    Node add_Two_Sorted_List(Node head1, Node head2){
+        if (head1 == null && head2 == null){
+            return null;
+        }else if (head1 == null && head2 != null){
+            return head2;
+        }else if (head1 != null && head2 == null){
+            return head1;
+        }else if (head1.next == null && head2.next == null){
+            if (head1.data >= head2.data){
+                head2.next = head1;
+                return head2;
+            }else{
+                head1.next = head2;
+                return head1;
+            }
+        }
+        Node temp = null,res = null;
+        while (head1 != null && head2 != null) {
+            if (head1.data <= head2.data){
+                if (temp == null){
+                    temp = new Node(head1.data);
+                    res = temp;
+                }else {
+//                    temp.insert_Node(temp,head1.data);
+                    temp.next = new Node(head1.data);
+                    temp = temp.next;
+                }
+                head1 = head1.next;
+            }else {
+                if (temp == null){
+                    temp = new Node(head2.data);
+                    res = temp;
+                }else {
+//                    temp.insert_Node(temp,head2.data);
+                    temp.next = new Node(head2.data);
+                    temp = temp.next;
+                }
+                head2 = head2.next;
+            }
+        }
+        Node node = res;
+        while (res.next != null){
+            res = res.next;
+        }
+        while (head1 != null){
+//            res.insert_Node(res,head1.data);
+            res.next = new Node(head1.data);
+            res = res.next;
+            head1 = head1.next;
+        }
+        while (head2 != null){
+            res.next = new Node(head2.data);
+            res = res.next;
+//            res.insert_Node(res,head2.data);
+            head2 = head2.next;
+        }
+        return node;
+    }
+    Node merge_K_Linked_Lists(ArrayList<Node> list){
+        Node[] arr = new Node[list.size()];
+        for (int i = 0; i <list.size(); i++) {
+            arr[i] = list.get(i);
+        }
+        Node temp = add_Two_Sorted_List(arr[0],arr[1]);
+        if (arr.length > 2){
+            for (int i = 2; i < arr.length; i++) {
+                temp = add_Two_Sorted_List(temp,arr[i]);
+            }
+        }
+        return temp;
+    }
+
+    Node cloneWithNextAndRandom(Node head){
+        Node temp = head,help=null,header = head;
+        while (head != null) {
+            help = head.next;
+            head.next = new Node(head.data);
+            head.next.next = help;
+            head = head.next.next;
+        }
+        Node t = temp;
+        while(temp != null){
+            help = temp.next;
+//            uncomment this lne
+//            help.arb = temp.arb != null ? temp.arb.next : null;
+            temp = temp.next.next;
+        }
+        Node new_head = t.next, node = t.next, original_head = t;
+
+        while (new_head.next != null || original_head.next.next != null){
+            original_head.next = original_head.next.next;
+            original_head = original_head.next;
+            new_head.next = new_head.next.next;
+            new_head = new_head.next;
+        }
+        Node s = t;
+        while (t.next.next != null){
+            t = t.next;
+        }
+        t.next = null;
+        head = s;
+        return node;
+    }
+
+    Node segregateEvenAndOdd(Node head){
+        Node even=null,odd=null,temp = null,temp1 = null;
+        while(head != null){
+            if(head.data%2==0){
+                if(even == null){
+                    even = new Node(head.data);
+                    temp = even;
+                }
+                else{
+                    even.next = new Node(head.data);
+                    even = even.next;
+                }
+            }
+            else {
+                if(odd == null){
+                    odd = new Node(head.data);
+                    temp1 = odd;
+                }
+                else{
+                    odd.next = new Node(head.data);
+                    odd = odd.next;
+                }
+            }
+            head = head.next;
+        }
+        if(temp != null){
+            Node res = temp;
+            while(temp.next != null)
+                temp = temp.next;
+            temp.next = temp1;
+            return res;
+        }
+        else
+            return temp1;
+    }
+
+    Node flattenALinkedList(Node root){
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        Node temp = null;
+        while(root != null){
+            temp = root;
+            while(temp != null){
+                list.add(temp.data);
+                //uncomment this
+//                temp = temp.bottom;
+            }
+            root = root.next;
+        }
+        Collections.sort(list);
+        Node temp1 = null,res = null;
+        for(Integer i : list){
+            if(temp1 == null){
+                temp1 = new Node(i);
+                res = temp1;
+            }else{
+                //uncomment this
+//                temp1.bottom = new Node(i);
+//                temp1 = temp1.bottom;
+            }
+        }
+        return res;
+    }
+
+    Node mergeSort(Node head){
+        Node last = null, temp_head = head;
+        while (temp_head.next != null){
+            temp_head = temp_head.next;
+        }
+        last = temp_head;
+        return merge_sort_helper(head,last);
+    }
+    Node merge_sort_helper(Node head, Node last) {
+        Node fp = head, mid = head;
+        // base condition
+        if (head == last)
+            return new Node(head.data);
+        // finding mid
+        while (fp != last && fp.next != last){
+            fp = fp.next.next;
+            mid = mid.next;
+        }
+        // merging
+        return add_Two_Sorted_List(merge_sort_helper(head,mid),merge_sort_helper(mid.next,last));
+    }
+
+    static int countPairs(Node first, Node second, int value){
+        int count = 0;
+
+        // The loop terminates when either of two pointers
+        // become null, or they cross each other (second.next
+        // == first), or they become same (first == second)
+        while (first != null && second != null &&
+                first != second && second.next != first) {
+
+            // pair found
+            if ((first.data + second.data) == value) {
+
+                // increment count
+                count++;
+
+                // move first in forward direction
+                first = first.next;
+
+                // move second in backward direction
+                second = second.prev;
+            }
+
+            // if sum is greater than 'value'
+            // move second in backward direction
+            else if ((first.data + second.data) > value)
+                second = second.prev;
+
+                // else move first in forward direction
+            else
+                first = first.next;
+        }
+
+        // required count of pairs
+        return count;
+    }
+    static int countTriplets(Node head, int x){
+        // if list is empty
+        if (head == null)
+            return 0;
+
+        Node current, first, last;
+        int count = 0;
+
+        // get pointer to the last node of
+        // the doubly linked list
+        last = head;
+        while (last.next != null)
+            last = last.next;
+
+        // traversing the doubly linked list
+        for (current = head; current != null; current = current.next) {
+
+            // for each current node
+            first = current.next;
+
+            // count pairs with sum(x - current.data) in the range
+            // first to last and add it to the 'count' of triplets
+            count += countPairs(first, last, x - current.data);
+        }
+
+        // required count of triplets
+        return count;
+    }
+
+    //change linked list to array
+    ArrayList <Integer> nearlySorted(int arr[], int num, int k){
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i <= k; i++)
+            pq.add(arr[i]);
+        for (int i = k+1; i < arr.length; i++) {
+            list.add(pq.remove());
+            pq.add(arr[i]);
+        }
+        while (pq.size()>0)
+            list.add(pq.remove());
+        return list;
+    }
+
+    Node sortLinkedListOf_0s_1s_2s(Node head){
+        int count = 0, count1 = 0, count2 = 0;
+        Node node = head;
+        while(head != null){
+            if(head.data == 0)
+                count++;
+            else if(head.data == 1)
+                count1++;
+            else count2++;
+            head = head.next;
+        }
+        head = node;
+        node = head;
+        while(count>0){
+            node.data = 0;
+            node = node.next;
+            count--;
+        }
+        while(count1>0){
+            node.data = 1;
+            node = node.next;
+            count1--;
+        }
+        while(count2>0){
+            node.data = 2;
+            node = node.next;
+            count2--;
+        }
+        return head;
+    }
+
+    public Node rotate_A_DLL(Node start, int k) {
+        int count = 1;
+        Node current = start;
+        while(count < k && current != null){
+            current = current.next;
+            count++;
+        }
+        if(current == null)
+            return null;
+        Node nth = current;
+        while(current.next != null){
+            current = current.next;
+        }
+        current.next = start;
+        start.prev = current;
+        start = nth.next;
+        start.prev = null;
+        nth.next = null;
+        return start;
+    }
+
+    Node quick_Sort(Node head){
+        if (head == null || head.next == null)
+            return head;
+        Node temp = head;
+        int count = 0;
+        while (temp != null){
+            count++;
+            temp = temp.next;
+        }
+        int[] arr = new int[count];
+        count = 0;
+        while(head != null){
+            arr[count++] = head.data;
+            head = head.next;
+        }
+        quick_Sort_On_Array(arr,0,arr.length-1);
+        Node res = null;
+        temp = null;
+        for (Integer i : arr) {
+            if (temp == null){
+                temp = new Node(i);
+                res = temp;
+            }else {
+                temp.next = new Node(i);
+                temp = temp.next;
+            }
+        }
+        return res;
+    }
+
+    void quick_Sort_On_Array(int[] arr, int l, int r) {
+        if (l<r){
+        int pi = partition(arr,l,r);
+        quick_Sort_On_Array(arr,l,pi-1);
+        quick_Sort_On_Array(arr,pi+1,r);
+        }
+    }
+
+    int partition(int[] arr, int l, int r) {
+        int i = l-1, j = l,pivot = arr[r];
+        while (j < r){
+            if (arr[j] < pivot)
+                swap(arr,++i,j);
+            j++;
+        }
+        swap(arr,i+1,r);
+        return i+1;
+    }
+
+    void swap(int[] arr, int i, int j) {
+        int temp = arr[j];
+        arr[j] = arr[i];
+        arr[i] = temp;
+    }
+
+    long multiply_Two_Linked_Lists(Node head, Node head1){
+        long n = 0, n1 = 0;
+        StringBuilder sb = new StringBuilder();
+        while (head != null){
+            sb.append(head.data);
+            head = head.next;
+        }
+        for (int i = 0; i < sb.toString().length(); i++)
+         n =  (n * 10 + (long) sb.toString().charAt(i) - '0') % 1000000007;
+        sb = new StringBuilder();
+        while (head1 != null){
+            sb.append(head1.data);
+            head1 = head1.next;
+        }
+        for (int i = 0; i < sb.toString().length(); i++)
+            n1 =  (n1 * 10 + (long) sb.toString().charAt(i) - '0') % 1000000007;
+        return (n*n1)%1000000007;
+    }
+
+    // function to reverse a doubly linked list in groups of given size
+    Node revDoublyListInGroupOfGivenSize(Node head, int k) {
+        Node current = head;
+        Node next = null;
+        Node newHead = null;
+        int count = 0;
+
+        // reversing the current group of k
+        // or less than k nodes by adding
+        // them at the beginning of list
+        // 'newHead'
+        while (current != null && count < k)
+        {
+            next = current.next;
+            newHead = push(newHead, current);
+            current = next;
+            count++;
+        }
+
+        // if next group exists then making the desired
+        // adjustments in the link
+        if (next != null)
+        {
+            head.next = revDoublyListInGroupOfGivenSize(next, k);
+            head.next.prev = head;
+        }
+
+        // pointer to the new head of the
+        // reversed group
+        return newHead;
+    }
+    // function to insert a node at the beginning of the Doubly Linked List
+    Node push(Node head, Node new_node) {
+        // since we are adding at the beginning,
+        // prev is always NULL
+        new_node.prev = null;
+
+        // link the old list off the new node
+        new_node.next = head;
+
+        // change prev of head node to new node
+        if (head != null)
+            head.prev = new_node;
+
+        // move the head to point to the new node
+        head = new_node;
+        return head;
+    }
+
+}
+
+public class Linked_List_Creation {
+    public static void main(String[] args) {
+        Linked_List_Utilities utils = new Linked_List_Utilities();
+        Node head = new Node(1),head1 = new Node(9);
+        head.insert_Node(head, 2);
+        head.insert_Node(head, 3);
+        head.insert_Node(head, 3);
+        head.insert_Node(head, 4);
+        head.insert_Node(head, 4);
+        head.insert_Node(head, 5);
+        utils.print(utils.remove_Duplicates_Totally(head));
+//        head = utils.mergeSort(head);
+//        head1.insert_Node(head1, 6);
+//        head1.insert_Node(head1, 9);
+//        head1.insert_Node(head1, 16);
+//        head1.insert_Node(head1, 18);
+//        Node head2 = new Node(4);
+//        head2.insert_Node(head2,7);
+//        head2.insert_Node(head2,8);
+//        head2.insert_Node(head2,11);
+//        head2.insert_Node(head2,23);
+//        head2.insert_Node(head2,80);
+//        ArrayList<Node> list = new ArrayList<>();
+//        list.add(head);
+//        list.add(head1);
+//        list.add(head2);
+        //utils.print(utils.merge_K_Linked_Lists(list));
+        // head1 == 1 2 3 4 5 6
+        // head2 == 5 6 9 16 18
+        //head = utils.add_Two_Sorted_List(head,head1);
+        //utils.print(head);
+//        utils.print(utils.addTwoLists(head,head1));
+    }
+}
+
