@@ -1,0 +1,504 @@
+package BinaryTree;
+
+import java.util.*;
+
+class Node {
+    int data;
+    Node left, right;
+
+    Node(int data) {
+        this.data = data;
+        this.left = this.right = null;
+    }
+
+    ArrayList<Integer> levelOrderTraversal(Node head) {
+        Queue<Node> queue = new ArrayDeque<>();
+        ArrayList<Integer> list = new ArrayList<>();
+        queue.add(head);
+        while (queue.size() > 0) {
+            Node temp = queue.remove();
+            list.add(temp.data);
+            if (temp.left != null) {
+                queue.add(temp.left);
+            }
+            if (temp.right != null) {
+                queue.add(temp.right);
+            }
+        }
+        return list;
+    }
+
+    ArrayList<Integer> reverseLevelOrderTraversal(Node head) {
+        Queue<Node> queue = new ArrayDeque<>();
+        ArrayList<Integer> list = new ArrayList<>();
+        queue.add(head);
+        while (queue.size() > 0) {
+            Node temp = queue.remove();
+            list.add(temp.data);
+            if (temp.right != null) {
+                queue.add(temp.right);
+            }
+            if (temp.left != null) {
+                queue.add(temp.left);
+            }
+        }
+        Collections.reverse(list);
+        return list;
+    }
+
+    int height(Node node) {
+        if (node == null)
+            return 0;
+        return Math.max(height(node.left), height(node.right)) + 1;
+    }
+
+    public int d = 0;
+
+    int diameter(Node node) {
+        h(node);
+        return d;
+    }
+
+    int h(Node node) {
+        int lh = 0, rh = 0;
+        if (node == null) {
+            return 0;
+        }
+        lh = h(node.left);
+        rh = h(node.right);
+        d = Math.max(d, (lh + rh + 1));
+        // for checking the tree is balanced or not change d to boolean
+//        if(Math.abs(lh-rh) > 1)
+//            d = true;
+        return Math.max(lh, rh) + 1;
+    }
+
+//    int maxLvl = 0;
+//    ArrayList<Integer> list = new ArrayList<Integer>();
+//    ArrayList<Integer> leftView(Node root){
+//        list.clear();
+//        maxLvl = 0;
+//        leftViewHelper(root,0);
+//        return list;
+//    }
+//    void leftViewHelper(Node root,int lvl){
+//        if(root == null)
+//            return;
+//        if(lvl >= maxLvl){
+//            list.add(root.data);
+//            maxLvl++;
+//        }
+//        leftViewHelper(root.left,lvl+1);
+//        leftViewHelper(root.right,lvl+1);
+//    }
+//
+//    int maxLvl = 0;
+//    ArrayList<Integer> list = new ArrayList<Integer>();
+//    ArrayList<Integer> leftView(Node root)
+//    {
+//        list.clear();
+//        maxLvl = 0;
+//        leftViewHelper(root,0);
+//        return list;
+//    }
+//    void leftViewHelper(Node root,int lvl){
+//        if(root == null)
+//            return;
+//        if(lvl >= maxLvl){
+//            list.add(root.data);
+//            maxLvl++;
+//        }
+//        leftViewHelper(root.left,lvl+1);
+//        leftViewHelper(root.right,lvl+1);
+
+    static ArrayList<Integer> list = new ArrayList<Integer>();
+    static TreeMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
+    static Queue<Pair> queue = new LinkedList<Pair>();
+
+    static ArrayList<Integer> topView(Node root) {
+        list.clear();
+        map.clear();
+        topViewHelper(root, 0);
+        for (Integer i : map.values())
+            list.add(i);
+        return list;
+    }
+
+    static void topViewHelper(Node root, int lvl) {
+        queue.add(new Pair(root, lvl));
+
+        while (!queue.isEmpty()) {
+
+            Pair obj = queue.poll();
+
+            // remove the next line for bottom view of tree
+            if (!map.containsKey(obj.level))
+                map.put(obj.level, obj.temp.data);
+
+            if (obj.temp.left != null)
+                queue.add(new Pair(obj.temp.left, obj.level - 1));
+
+            if (obj.temp.right != null)
+                queue.add(new Pair(obj.temp.right, obj.level + 1));
+        }
+    }
+    ArrayList<Integer> zigZagTraversal(Node root){
+        ArrayList<Integer> list = new ArrayList<Integer>(),helper = new ArrayList<Integer>();
+        Queue<Pair> queue = new LinkedList<Pair>();
+        boolean bool = false;
+        queue.add(new Pair(root,0));
+        list.add(root.data);
+        while(!queue.isEmpty()){
+            Pair temp = queue.poll();
+            if(temp.level % 2 == 0){
+                if(helper.size() > 0){
+                    Collections.reverse(helper);
+                    for(Integer i : helper)
+                        list.add(i);
+                    helper.clear();
+                }
+                if(bool)
+                    list.add(temp.temp.data);
+                bool = true;
+            }else helper.add(temp.temp.data);
+
+            if(temp.temp.left != null)
+                queue.add(new Pair(temp.temp.left,(temp.level)+1));
+            if(temp.temp.right != null)
+                queue.add(new Pair(temp.temp.right,(temp.level)+1));
+        }
+        if(helper.size() > 0){
+            Collections.reverse(helper);
+            for(Integer i : helper)
+                list.add(i);
+            helper.clear();
+        }
+        return list;
+    }
+    public ArrayList<Integer> diagonal(Node root) {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        Queue<Node> queue = new LinkedList<Node>();
+        if(root == null) return list;
+        queue.add(root);
+        while(queue.size() > 0){
+            Node temp = queue.poll();
+            while(temp != null){
+                if(temp.left != null)
+                    queue.add(temp.left);
+                list.add(temp.data);
+                temp = temp.right;
+            }
+        }
+        return list;
+    }
+
+//    ArrayList<Integer> list = new ArrayList<Integer>(),helper = new ArrayList<Integer>();
+//    ArrayList <Integer> boundary(Node node) {
+//        if(node.left == null && node.right == null){
+//            list.add(node.data);
+//            return list;
+//        }
+//        if(node != null){
+//            list.add(node.data);
+//            leftFiller(node.left);
+//            leafNodeFiller(node);
+//            rightFiller(node.right);
+//        }
+//        if(helper.size()>0)
+//            Collections.reverse(helper);
+//        for(Integer i : helper)
+//            list.add(i);
+//        return list;
+//    }
+//    void leftFiller(Node node){
+//        if(node == null)
+//            return;
+//        if(node.left != null){
+//            list.add(node.data);
+//            leftFiller(node.left);
+//        }else if(node.right != null){
+//            list.add(node.data);
+//            leftFiller(node.right);
+//        }
+//    }
+//    void rightFiller(Node node){
+//        if(node == null)
+//            return;
+//        if(node.right != null){
+//            helper.add(node.data);
+//            rightFiller(node.right);
+//        }else if(node.left != null){
+//            helper.add(node.data);
+//            rightFiller(node.left);
+//        }
+//    }
+//    void leafNodeFiller(Node root){
+//        if(root == null)
+//            return;
+//        if(root.left == null && root.right == null){
+//            list.add(root.data);
+//        }
+//        leafNodeFiller(root.left);
+//        leafNodeFiller(root.right);
+//    }
+
+//    ArrayList<Integer> list = new ArrayList<Integer>();
+//    Node bToDLL(Node root)
+//    {
+//        inorder(root);
+//        Node temp = null,res = null;
+//        for(Integer i: list){
+//            if(temp == null){
+//                temp = new Node(i);
+//                res = temp;
+//            }else{
+//                temp.right = new Node(i);
+//                temp.right.left = temp;
+//                temp = temp.right;
+//            }
+//        }
+//        return res;
+//    }
+//    void inorder(Node root){
+//        if(root == null)
+//            return;
+//        inorder(root.left);
+//        list.add(root.data);
+//        inorder(root.right);
+//    }
+public void toSumTree(Node node){
+    if(node == null)
+        return;
+    int temp = node.data;
+    node.data = helper(node) - temp;
+}
+    int helper(Node node){
+        if(node == null)
+            return 0;
+        if(node.left == null && node.right == null){
+            int temp = node.data;
+            node.data = 0;
+            return temp;
+        }
+        int t = node.data;
+        node.data = helper(node.left)+helper(node.right);
+        return node.data+t;
+    }
+
+    boolean isSumTree(Node root) {
+        if(root.left == null && root.right == null)
+            return true;
+        if(root.data == isSumTreeHelper(root.left) + isSumTreeHelper(root.right))
+            return true;
+        return false;
+    }
+    int isSumTreeHelper(Node node){
+        if(node == null)
+            return 0;
+        if(node.left == null && node.right == null)
+            return node.data;
+        if(node.data == isSumTreeHelper(node.left)+isSumTreeHelper(node.right));
+        return node.data + isSumTreeHelper(node.left)+isSumTreeHelper(node.right);
+    }
+
+    boolean checkIfLeavesAreAtSameLevel(Node root) {
+        if(root == null)
+            return true;
+        Queue<Pair> queue = new ArrayDeque<>();
+        ArrayList<Pair> list = new ArrayList<>();
+        queue.add(new Pair(root,0));
+        Pair pair = null;
+        while (queue.size() > 0) {
+            Pair node = queue.remove();
+            if(node.temp.left == null && node.temp.right == null)
+                if(pair == null)
+                    pair = node;
+                else if(pair.level != node.level)
+                    return false;
+            if (node.temp.left != null)
+                queue.add(new Pair(node.temp.left,node.level+1));
+            if (node.temp.right != null)
+                queue.add(new Pair(node.temp.right,node.level+1));
+        }
+        return true;
+    }
+    /*********************** Duplicate subtree ************************/
+//    HashMap<String,Integer> map = new HashMap<String,Integer>();
+//    ArrayList<String> l = new ArrayList<>();
+//    Boolean bool = false;
+//    StringBuilder sb = new StringBuilder();
+//    int dupSub(Node root) {
+//        Queue<Node> queue = new ArrayDeque<>();
+//        ArrayList<Node> list = new ArrayList<>();
+//        queue.add(root);
+//        while (queue.size() > 0) {
+//            Node temp = queue.remove();
+//            list.add(temp);
+//            if (temp.left != null) {
+//                queue.add(temp.left);
+//            }
+//            if (temp.right != null) {
+//                queue.add(temp.right);
+//            }
+//        }
+//        for(Node node:list){
+//            String str = preorder(node,"");
+//            sb = new StringBuilder();
+//            if(bool && map.containsKey(str) && str.length() > 3)
+//                return 1;
+//            if(!bool && map.containsKey(str) && str.length() > 2){
+//                return 1;
+//            }
+//            else map.put(str,0);
+//        }
+//        return 0;
+//    }
+//    String preorder(Node node, String str){
+//        if(node == null)
+//            return "N";
+//        sb.append(node.data);
+//        if(node.data>99)
+//            bool = true;
+//        preorder(node.left,str);
+//        preorder(node.right,str);
+//        return sb.toString();
+//    }
+    /*********************** Tree from inorder and preorder************************/
+//    public static int pre_index = 0;
+//    public static Node buildTree(int inorder[], int preorder[], int n)
+//    {
+//        Solution.pre_index = 0;
+//        return helper(preorder,inorder,0,n-1);
+//    }
+//    public static Node helper(int[] preorder, int[] inorder, int start, int end){
+//        if(start > end)
+//            return null;
+//        Node temp = new Node(preorder[pre_index++]);
+//        if(start == end)
+//            return temp;
+//        int index = in_helper(inorder,temp.data,start,end);
+//        temp.left = helper(preorder,inorder,start,index-1);
+//        temp.right = helper(preorder,inorder,index+1,end);
+//        return temp;
+//    }
+//    public static int in_helper(int[] inorder, int val,int start, int end){
+//        int temp = -1;
+//        for(int i=start; i<=end; i++){
+//            if(inorder[i] == val)
+//                temp = i;
+//        }
+//        return temp;
+//    }
+    /*********************** Sum of longest path from root to leaf node ************************/
+//    int sum = 0;
+//    HashMap<Integer,Integer> map = new HashMap<>();
+//    public int sumOfLongRootToLeafPath(Node root)
+//    {
+//        int height = height_finder(root);
+//        int arr[] = new int[height];
+//        helper(root,arr,0);
+//        for(Integer i:map.keySet())
+//            if(sum < i)
+//                sum = i;
+//        return map.get(sum);
+//    }
+//    public void helper(Node node, int[] arr, int index){
+//        if(node == null)
+//            return;
+//        arr[index] = node.data;
+//        if(node.left == null && node.right == null)
+//            update_Sum(arr,index);
+//        helper(node.left,arr,index+1);
+//        helper(node.right,arr,index+1);
+//    }
+//    void update_Sum(int[] arr, int index){
+//        if(map.containsKey(index+1)){
+//            int temp = 0;
+//            for(int i=0; i<=index; i++)
+//                temp += arr[i];
+//            if(map.get(index+1) < temp)
+//                map.put(index+1,temp);
+//        }else{
+//            int x = 0;
+//            for(int i=0; i<=index; i++)
+//                x += arr[i];
+//            map.put(index+1,x);
+//        }
+//    }
+//    public int height_finder(Node node){
+//        if(node == null)
+//            return 0;
+//        return Math.max(height_finder(node.left),height_finder(node.right))+1;
+//    }
+    Node lca(Node root, int n1,int n2) {
+        if(root == null)
+            return null;
+        if(root.data == n1 || root.data == n2)
+            return root;
+        Node l = lca(root.left,n1,n2);
+        Node r = lca(root.right,n1,n2);
+        if(l != null && r != null)
+            return root;
+        if(l != null)
+            return l;
+        else return r;
+    }
+    int findDist(Node root, int a, int b) {
+        Node node = lca(root,a,b);
+        return distFromNode(node,a,0)+distFromNode(node,b,0);
+    }
+    int distFromNode(Node node, int a, int dist){
+        if(node == null)
+            return -1;
+        if(node.data == a)
+            return dist;
+        int d = distFromNode(node.left,a,dist+1);
+        if(d != -1)
+            return d;
+        return d = distFromNode(node.right,a,dist+1);
+    }
+    int res = -1,count = 0;
+    public int kthAncestor(Node root, int k, int node) {
+        fun(root,node,k);
+        return res;
+    }
+    boolean fun(Node node, int val,int k){
+        if(node == null)
+            return false;
+        if(node.data == val)
+            return true;
+        if(fun(node.left,val,k) || fun(node.right,val,k)){
+            if(++count == k)
+                res = node.data;
+            return true;
+        }
+        return false;
+    }
+    boolean isIsomorphic(Node root1, Node root2) {
+        if(root1 == null && root2 == null)
+            return true;
+        if(root1 == null || root2 == null)
+            return false;
+        if(root1.data == root2.data && (isIsomorphic(root1.left,root2.left)
+                || isIsomorphic(root1.right,root2.left)))
+            return true;
+        return false;
+    }
+
+}
+
+class Pair {
+    int level = 0;
+    Node temp;
+
+    Pair(Node temp, int level) {
+        this.temp = temp;
+        this.level = level;
+    }
+}
+
+public class BinaryTree {
+    public static void main(String[] args) {
+
+    }
+}
